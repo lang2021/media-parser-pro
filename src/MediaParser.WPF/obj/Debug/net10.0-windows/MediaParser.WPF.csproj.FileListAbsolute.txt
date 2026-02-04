@@ -29,3 +29,4 @@ E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaP
 E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.WPF\bin\Debug\net10.0-windows\Ookii.Dialogs.Wpf.dll
 E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.WPF\obj\Debug\net10.0-windows\ParseMatchWindow.g.cs
 E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.WPF\obj\Debug\net10.0-windows\ParseMatchWindow.baml
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.WPF\obj\Debug\net10.0-windows\MediaParser.WPF.sourcelink.json

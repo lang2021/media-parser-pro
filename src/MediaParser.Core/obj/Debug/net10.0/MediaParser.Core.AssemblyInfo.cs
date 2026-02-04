@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MediaParser.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+22e5c4d5e05f6fd8e5079472f79cb0f9cc2d28fc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d4710ff6c154fad14fa7fba606410a9b56b2108")]
 [assembly: System.Reflection.AssemblyProductAttribute("MediaParser.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MediaParser.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
