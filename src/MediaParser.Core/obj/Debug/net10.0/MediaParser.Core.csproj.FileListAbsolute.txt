@@ -1,0 +1,12 @@
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\bin\Debug\net10.0\MediaParser.Core.deps.json
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\bin\Debug\net10.0\MediaParser.Core.dll
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\bin\Debug\net10.0\MediaParser.Core.pdb
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\MediaParser.Core.csproj.AssemblyReference.cache
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\MediaParser.Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\MediaParser.Core.AssemblyInfoInputs.cache
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\MediaParser.Core.AssemblyInfo.cs
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\MediaParser.Core.csproj.CoreCompileInputs.cache
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\MediaParser.Core.dll
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\refint\MediaParser.Core.dll
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\MediaParser.Core.pdb
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.Core\obj\Debug\net10.0\ref\MediaParser.Core.dll

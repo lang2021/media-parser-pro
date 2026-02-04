@@ -1,0 +1,90 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "MediaParser.WPF/1.0.0": {
+        "dependencies": {
+          "LibVLCSharp": "3.8.0",
+          "LibVLCSharp.WPF": "3.8.0",
+          "MediaParser.Core": "1.0.0",
+          "Ookii.Dialogs.Wpf": "5.0.1"
+        },
+        "runtime": {
+          "MediaParser.WPF.dll": {}
+        }
+      },
+      "LibVLCSharp/3.8.0": {
+        "runtime": {
+          "lib/net6.0/LibVLCSharp.dll": {
+            "assemblyVersion": "3.8.0.0",
+            "fileVersion": "3.8.0.0"
+          }
+        }
+      },
+      "LibVLCSharp.WPF/3.8.0": {
+        "dependencies": {
+          "LibVLCSharp": "3.8.0"
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/LibVLCSharp.WPF.dll": {
+            "assemblyVersion": "3.8.0.0",
+            "fileVersion": "3.8.0.0"
+          }
+        }
+      },
+      "Ookii.Dialogs.Wpf/5.0.1": {
+        "runtime": {
+          "lib/net6.0-windows7.0/Ookii.Dialogs.Wpf.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.1.0"
+          }
+        }
+      },
+      "MediaParser.Core/1.0.0": {
+        "runtime": {
+          "MediaParser.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "MediaParser.WPF/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LibVLCSharp/3.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vHHnH+nu3M8fb4jSt4Ad4aVOq7trW4ZBh85WFp7QaWPWDUX9SFVcgYc5IKOtyNh1IaBM/OmZV6NuvTz6eDv6tw==",
+      "path": "libvlcsharp/3.8.0",
+      "hashPath": "libvlcsharp.3.8.0.nupkg.sha512"
+    },
+    "LibVLCSharp.WPF/3.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6AaIfxhPYH5gh9GbFZtz7rjsDZpxx0XS7V94tGK8bkBZzE0ZUpFD/3Zo0lsVsZCMY7nTE+e0wBsVW5uAZYL7Dg==",
+      "path": "libvlcsharp.wpf/3.8.0",
+      "hashPath": "libvlcsharp.wpf.3.8.0.nupkg.sha512"
+    },
+    "Ookii.Dialogs.Wpf/5.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iZNnZwqTpK0cfR0vkotncP1c025/PHlIdzc7iEKBYwhVv1V0zXp9/RT/O0kMhsmlwXqRxxbE4pdhfinbJXtjPg==",
+      "path": "ookii.dialogs.wpf/5.0.1",
+      "hashPath": "ookii.dialogs.wpf.5.0.1.nupkg.sha512"
+    },
+    "MediaParser.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

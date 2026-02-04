@@ -1,0 +1,1047 @@
+<Window x:Class="MediaParser.WPF.ParseMatchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MediaParser.WPF"
+        xmlns:vm="clr-namespace:MediaParser.WPF.ViewModels"
+        xmlns:conv="clr-namespace:MediaParser.WPF.Converters"
+        mc:Ignorable="d"
+        Title="Parse &amp; Match - MediaParser Pro" 
+        Height="700" Width="1100"
+        Background="#FAFAFA">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <!-- ==================== 主题颜色（匹配 desktop-app-ui） ==================== -->
+            <SolidColorBrush x:Key="BackgroundBrush" Color="#FAFAFA"/>
+            <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="BorderBrush" Color="#E5E5E5"/>
+            <SolidColorBrush x:Key="ForegroundBrush" Color="#18181B"/>
+            <SolidColorBrush x:Key="MutedForegroundBrush" Color="#71717A"/>
+            <SolidColorBrush x:Key="InputBrush" Color="#F4F4F5"/>
+            <SolidColorBrush x:Key="PrimaryBrush" Color="#18181B"/>
+            <SolidColorBrush x:Key="PrimaryForegroundBrush" Color="#FAFAFA"/>
+            <SolidColorBrush x:Key="SecondaryBrush" Color="#F4F4F5"/>
+            <SolidColorBrush x:Key="VideoBlueBrush" Color="#3B82F6"/>
+            <SolidColorBrush x:Key="VideoBlueBgBrush" Color="#DBEAFE"/>
+            <SolidColorBrush x:Key="ImageEmeraldBrush" Color="#10B981"/>
+            <SolidColorBrush x:Key="ImageEmeraldBgBrush" Color="#D1FAE5"/>
+            <SolidColorBrush x:Key="PrimaryBgBrush" Color="#F0F0F0"/>
+            <SolidColorBrush x:Key="SuccessGreenBrush" Color="#22C55E"/>
+            <SolidColorBrush x:Key="WarningOrangeBrush" Color="#F97316"/>
+            <SolidColorBrush x:Key="WarningBgBrush" Color="#FFF7ED"/>
+            <SolidColorBrush x:Key="WarningForegroundBrush" Color="#C2410C"/>
+            
+            <!-- ==================== 按钮样式 ==================== -->
+            <Style x:Key="RoundedButtonStyle" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="32"
+                                    x:Name="border">
+                                <ContentPresenter HorizontalAlignment="Center" 
+                                                 VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" 
+                                            Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter Property="Opacity" Value="0.9"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" 
+                                            Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter Property="Opacity" Value="0.8"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- ==================== Converters ==================== -->
+            <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter_Invert" IsInvert="True"/>
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter_Invert" IsInvert="True"/>
+            <conv:BoolToGreenRedConverter x:Key="BoolToGreenRedConverter"/>
+            <conv:WorkflowStateToStringConverter x:Key="StateToStringConverter"/>
+            <conv:SecondsToTimeStringConverter x:Key="SecondsToTimeStringConverter"/>
+            <conv:ListToStringConverter x:Key="ListToStringConverter"/>
+            <conv:ImageRoleToIndexConverter x:Key="ImageRoleToIndexConverter"/>
+            
+            <!-- ViewModel -->
+            <vm:MainViewModel x:Key="MainViewModel"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True" Background="{StaticResource BackgroundBrush}">
+        
+        <!-- ==================== 顶部 Header ==================== -->
+        <Border DockPanel.Dock="Top" 
+                Background="{StaticResource CardBackgroundBrush}" 
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Height="56">
+            <Grid Margin="16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- 返回按钮 -->
+                <Button Grid.Column="0" 
+                        Command="{Binding BackCommand}"
+                        Background="Transparent"
+                        Foreground="{StaticResource ForegroundBrush}"
+                        BorderThickness="0"
+                        Padding="8,4"
+                        Height="28"
+                        Margin="0,0,8,0"
+                        Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource PrimaryBgBrush}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="←" FontSize="13" VerticalAlignment="Center"/>
+                        <TextBlock Text="Back" FontSize="12" FontWeight="Medium" Margin="4,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                
+                <!-- 分隔线 -->
+                <Border Grid.Column="1" Width="1" Height="20" 
+                        Background="{StaticResource BorderBrush}" 
+                        Margin="8,0"/>
+                
+                <!-- 标题 -->
+                <TextBlock Grid.Column="2" Text="Parse &amp; Match" 
+                           Foreground="{StaticResource ForegroundBrush}" 
+                           FontSize="15" FontWeight="SemiBold" 
+                           VerticalAlignment="Center"/>
+                
+                <!-- Start Processing 按钮 -->
+                <Button Grid.Column="3" 
+                        Command="{Binding StartProcessingCommand}"
+                        Background="{StaticResource PrimaryBrush}"
+                        Foreground="{StaticResource PrimaryForegroundBrush}"
+                        BorderThickness="0"
+                        Padding="16,8"
+                        FontSize="13"
+                        FontWeight="500"
+                        Height="36"
+                        Cursor="Hand"
+                        ToolTip="Start archiving process">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                        <TextBlock Text="▶" FontSize="12"/>
+                        <TextBlock Text="Start Processing"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- ==================== 主体内容区域（三栏布局） ==================== -->
+        <Grid Margin="0">
+            <Grid.ColumnDefinitions>
+                <!-- 左侧：元数据面板 -->
+                <ColumnDefinition Width="320"/>
+                <!-- 中间：文件列表 -->
+                <ColumnDefinition Width="260"/>
+                <!-- 右侧：预览与控制 -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ==================== 左列：元数据面板 ==================== -->
+            <Border Grid.Column="0" 
+                    Background="{StaticResource CardBackgroundBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,1,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        
+                        <!-- 元数据输入区域 -->
+                        <Border Background="{StaticResource BackgroundBrush}" 
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="16">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" 
+                                           VerticalAlignment="Center" 
+                                           Margin="0,0,0,8">
+                                <TextBlock Text="Paste Metadata Text" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                               FontSize="12" FontWeight="Medium"/>
+                                    <TextBlock x:Name="MetadataCharCount"
+                                               Text="0 chars"
+                                               Foreground="{StaticResource MutedForegroundBrush}" 
+                                               FontSize="11"
+                                               Margin="8,0,0,0"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                                
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <TextBox Grid.Row="0"
+                                             x:Name="MetadataInputBox"
+                                             Text="{Binding MetadataText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="{StaticResource InputBrush}"
+                                         Foreground="{StaticResource ForegroundBrush}"
+                                         BorderThickness="0"
+                                         Padding="8"
+                                         FontSize="12"
+                                             FontFamily="Consolas, Monaco, monospace"
+                                         TextWrapping="Wrap"
+                                             AcceptsReturn="True"
+                                             MinHeight="100"
+                                             MaxHeight="200">
+                                        <TextBox.ToolTip>
+                                            <StackPanel MaxWidth="300">
+                                                <TextBlock Text="支持格式：" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                                <TextBlock Text="• NFO 文件内容" Margin="8,0,0,2"/>
+                                                <TextBlock Text="•豆瓣/IMDb 元数据文本" Margin="8,0,0,2"/>
+                                                <TextBlock Text="•文件名解析 (SxxExxx)" Margin="8,0,0,2"/>
+                                                <TextBlock Text="快捷键: Ctrl+Enter 快速解析" Foreground="{StaticResource PrimaryBrush}" Margin="0,8,0,0"/>
+                                            </StackPanel>
+                                        </TextBox.ToolTip>
+                                    </TextBox>
+                                    
+                                    <!-- 解析状态指示器 -->
+                                    <StackPanel Grid.Row="1" 
+                                               Orientation="Vertical" 
+                                               Margin="0,8,0,0">
+                                        <Border x:Name="ParseStatusIndicator"
+                                                Background="{StaticResource SecondaryBrush}"
+                                                CornerRadius="4"
+                                                Padding="8,6"
+                                                VerticalAlignment="Center">
+                                            <TextBlock x:Name="ParseStatusText"
+                                                       Text="Ready"
+                                                       Foreground="{StaticResource MutedForegroundBrush}"
+                                                       FontSize="11"/>
+                                        </Border>
+                                        
+                                        <!-- 警告信息 -->
+                                        <Border Background="{StaticResource WarningBgBrush}"
+                                                CornerRadius="4"
+                                                Padding="8,6"
+                                                Margin="0,4,0,0"
+                                                Visibility="{Binding LastParseWarnings, Converter={StaticResource NullToVisibilityConverter}}">
+                                            <TextBlock Text="{Binding LastParseWarnings}"
+                                                       Foreground="{StaticResource WarningForegroundBrush}"
+                                                       FontSize="10"
+                                                       TextWrapping="Wrap"/>
+                                        </Border>
+                                        
+                                        <!-- Media Type -->
+                                        <TextBlock Text="Media Type:"
+                                                   Foreground="{StaticResource MutedForegroundBrush}"
+                                                   FontSize="12"
+                                                   Margin="0,8,0,4"/>
+                                        <ComboBox SelectedValue="{Binding SelectedMediaType, Mode=TwoWay}"
+                                                  Background="{StaticResource InputBrush}"
+                                                  Foreground="{StaticResource ForegroundBrush}"
+                                                  BorderThickness="0"
+                                                  Padding="8,6"
+                                                  Margin="0,0,0,8"
+                                                  FontSize="12">
+                                            <ComboBox.Style>
+                                                <Style TargetType="ComboBox">
+                                                    <Setter Property="ItemsSource">
+                                                        <Setter.Value>
+                                                            <x:Array Type="core:MediaType" xmlns:core="clr-namespace:MediaParser.Core.Workflow;assembly=MediaParser.Core">
+                                                                <core:MediaType>Series</core:MediaType>
+                                                                <core:MediaType>Movie</core:MediaType>
+                                                            </x:Array>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </ComboBox.Style>
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        
+                                        <!-- Buttons -->
+                                        <StackPanel Orientation="Vertical" 
+                                            Margin="0,8,0,0">
+                                <Button Content="Parse" 
+                                        Command="{Binding ParseMetadataCommand}"
+                                        Background="{StaticResource PrimaryBrush}"
+                                        Foreground="{StaticResource PrimaryForegroundBrush}"
+                                        BorderThickness="0"
+                                                    Padding="12,6"
+                                                    FontSize="11"
+                                        FontWeight="500"
+                                                    Height="32"
+                                                    HorizontalAlignment="Stretch"/>
+                                            <Button Content="Clear"
+                                                    Command="{Binding ClearMetadataCommand}"
+                                                    Background="Transparent"
+                                                    Foreground="{StaticResource MutedForegroundBrush}"
+                                                    BorderThickness="1"
+                                                    BorderBrush="{StaticResource BorderBrush}"
+                                                    Padding="12,6"
+                                                    FontSize="11"
+                                                    Height="32"
+                                                    Margin="0,8,0,0"
+                                                    HorizontalAlignment="Stretch"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                        
+                        <!-- 解析结果区域 -->
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                      PanningMode="VerticalFirst"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                
+                                <!-- Series Information -->
+                                <Expander x:Name="SeriesExpander"
+                                          IsExpanded="True"
+                                          BorderBrush="{StaticResource BorderBrush}"
+                                        BorderThickness="0,0,0,1"
+                                          Padding="0">
+                                    <Expander.Header>
+                                        <StackPanel Orientation="Horizontal" 
+                                                   VerticalAlignment="Center" 
+                                                   Margin="16,12">
+                                            <TextBlock Text="📄" FontSize="14"/>
+                                            <TextBlock Text="Series Information" 
+                                                       Foreground="{StaticResource ForegroundBrush}" 
+                                                       FontSize="13" FontWeight="SemiBold"
+                                                       Margin="8,0,0,0"/>
+                                        </StackPanel>
+                                    </Expander.Header>
+                                    <Expander.Content>
+                                        <Border Padding="16">
+                                            <StackPanel>
+                                                <!-- Title -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Title:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                     Text="{Binding Show.Title, Mode=OneWay}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                        
+                                                <!-- OriginalTitle -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Original:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                     Text="{Binding Show.OriginalTitle, Mode=OneWay}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                        
+                                                <!-- SortTitle -->
+                                                <Grid Margin="0,0,0,8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="SortTitle:" 
+                                                               Foreground="{StaticResource MutedForegroundBrush}" 
+                                                               FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                                    <TextBox Grid.Column="1" 
+                                                             Text="{Binding Show.SortTitle, Mode=OneWay}"
+                                                             Background="{StaticResource InputBrush}"
+                                                             Foreground="{StaticResource ForegroundBrush}"
+                                                             BorderThickness="0"
+                                                             Padding="8,6"
+                                                             FontSize="12"/>
+                                                </Grid>
+                                                
+                                                <!-- Year -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Year:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                     Text="{Binding Show.Year, Mode=OneWay}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                        
+                                                <!-- Premiered -->
+                                                <Grid Margin="0,0,0,8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="Premiered:" 
+                                                               Foreground="{StaticResource MutedForegroundBrush}" 
+                                                               FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                                    <TextBox Grid.Column="1" 
+                                                             Text="{Binding Show.Premiered, Mode=OneWay}"
+                                                             Background="{StaticResource InputBrush}"
+                                                             Foreground="{StaticResource ForegroundBrush}"
+                                                             BorderThickness="0"
+                                                             Padding="8,6"
+                                                             FontSize="12"/>
+                                                </Grid>
+                                                
+                                                <!-- Plot -->
+                                                <Grid Margin="0,0,0,8">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="Plot:" 
+                                                               Foreground="{StaticResource MutedForegroundBrush}" 
+                                                               FontSize="12" Width="70" VerticalAlignment="Top" Margin="0,8,0,0"/>
+                                                    <TextBox Grid.Column="1" 
+                                                             Text="{Binding Show.Plot, Mode=OneWay}"
+                                                             Background="{StaticResource InputBrush}"
+                                                             Foreground="{StaticResource ForegroundBrush}"
+                                                             BorderThickness="0"
+                                                             Padding="8,6"
+                                                             FontSize="12"
+                                                             MinHeight="80"
+                                                             AcceptsReturn="True"
+                                                             TextWrapping="Wrap"/>
+                                                </Grid>
+                                                
+                                                <!-- Studio -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Studio:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                     Text="{Binding Show.Studio, Mode=OneWay}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                        
+                                                <!-- Director -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Director:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                     Text="{Binding Show.Director, Mode=OneWay}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                        
+                                                <!-- Actors -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Actors:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                             Text="{Binding Show.Actors, Mode=OneWay, Converter={StaticResource ListToStringConverter}}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                        
+                                                <!-- Tags -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Tags:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                             Text="{Binding Show.Tags, Mode=OneWay, Converter={StaticResource ListToStringConverter}}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                                    </Expander.Content>
+                                </Expander>
+                                
+                                <!-- Episode Information -->
+                                <Expander x:Name="EpisodeExpander"
+                                          IsExpanded="True"
+                                          BorderBrush="{StaticResource BorderBrush}"
+                                          BorderThickness="0,0,0,1"
+                                          Padding="0">
+                                    <Expander.Header>
+                                        <StackPanel Orientation="Horizontal" 
+                                                   VerticalAlignment="Center" 
+                                                   Margin="16,12">
+                                            <TextBlock Text="📄" FontSize="14"/>
+                                            <TextBlock Text="Episode Information" 
+                                                       Foreground="{StaticResource ForegroundBrush}" 
+                                                       FontSize="13" FontWeight="SemiBold"
+                                                       Margin="8,0,0,0"/>
+                                            <TextBlock Text="{Binding Show.Episodes.Count, StringFormat='({0})'}" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Margin="4,0,0,0"/>
+                                        </StackPanel>
+                                    </Expander.Header>
+                                    <Expander.Content>
+                                        <Border Padding="16">
+                                            <ItemsControl ItemsSource="{Binding Show.Episodes}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="{StaticResource BorderBrush}" 
+                                                                BorderThickness="0,0,0,1"
+                                                                Padding="0,8" Margin="0,4">
+                                                            <StackPanel>
+                                                                <!-- Episode Header -->
+                                                                <Grid Margin="0,0,0,8">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <TextBlock Grid.Column="0" 
+                                                                               Text="{Binding Season, StringFormat='S{0}'}" 
+                                                                               Foreground="{StaticResource VideoBlueBrush}" 
+                                                                               FontSize="12" FontWeight="SemiBold"
+                                                                               Width="40" VerticalAlignment="Center"/>
+                                                                    <TextBlock Grid.Column="1" 
+                                                                               Text="{Binding Number, StringFormat='E{0}'}" 
+                                                                               Foreground="{StaticResource VideoBlueBrush}" 
+                                                                               FontSize="12" FontWeight="SemiBold"
+                                                                               VerticalAlignment="Center"/>
+                                                                </Grid>
+                                        
+                                                                <!-- Title -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                                                    <TextBlock Grid.Column="0" Text="Title:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                                             Text="{Binding Title, Mode=OneWay}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                        
+                                                                <!-- Air Date (Aired) -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                                                    <TextBlock Grid.Column="0" Text="Air Date:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                                             Text="{Binding ReleaseDate, Mode=OneWay}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                        
+                                                                <!-- Plot (Description) -->
+                                                                <TextBlock Text="Plot:" 
+                                                   Foreground="{StaticResource MutedForegroundBrush}" 
+                                                   FontSize="12" Margin="0,0,0,6"/>
+                                        <TextBox Height="80" 
+                                                                         Text="{Binding Summary, Mode=OneWay}"
+                                                 Background="{StaticResource InputBrush}"
+                                                 Foreground="{StaticResource ForegroundBrush}"
+                                                 BorderThickness="0"
+                                                 Padding="8"
+                                                 FontSize="12"
+                                                 TextWrapping="Wrap"
+                                                 Margin="0,0,0,8"/>
+                                        
+                                                                <!-- Tags -->
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Tags:" 
+                                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                                       FontSize="12" Width="70" VerticalAlignment="Center"/>
+                                            <TextBox Grid.Column="1" 
+                                                                             Text="{Binding Tags, Mode=OneWay, Converter={StaticResource ListToStringConverter}}"
+                                                     Background="{StaticResource InputBrush}"
+                                                     Foreground="{StaticResource ForegroundBrush}"
+                                                     BorderThickness="0"
+                                                     Padding="8,6"
+                                                     FontSize="12"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Border>
+                                    </Expander.Content>
+                                </Expander>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- ==================== 中列：文件列表 ==================== -->
+            <Border Grid.Column="1" 
+                    Background="{StaticResource CardBackgroundBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,1,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Header -->
+                    <Border Grid.Row="0" 
+                            Background="{StaticResource BackgroundBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="16,12">
+                        <StackPanel>
+                            <TextBlock Text="Selected Files" 
+                                       Foreground="{StaticResource ForegroundBrush}" 
+                                       FontSize="14" FontWeight="SemiBold"/>
+                            <TextBlock Foreground="{StaticResource MutedForegroundBrush}" FontSize="11">
+                                <Run Text="{Binding AllFiles.Count, Mode=OneWay}"/>
+                                <Run Text=" files selected"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- File List -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="8">
+                        <StackPanel>
+                            <!-- Video Files -->
+                            <ItemsControl ItemsSource="{Binding VideoFiles}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Transparent" 
+                                                Padding="8,6" 
+                                                Margin="4,2"
+                                                CornerRadius="6"
+                                                Cursor="Hand"
+                                                BorderThickness="1"
+                                                BorderBrush="Transparent">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Background" Value="{StaticResource PrimaryBgBrush}"/>
+                                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Border Width="24" Height="24" 
+                                                        Background="{StaticResource VideoBlueBgBrush}" 
+                                                        CornerRadius="4">
+                                                    <TextBlock Text="🎬" 
+                                                               FontSize="12" 
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text="{Binding FileName}"
+                                                           Foreground="{StaticResource ForegroundBrush}"
+                                                           FontSize="12" 
+                                                           Margin="8,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                            
+                                            <Border.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.SelectVideoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                              CommandParameter="{Binding}"
+                                                              MouseAction="LeftClick"/>
+                                            </Border.InputBindings>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <!-- Image Files -->
+                            <ItemsControl ItemsSource="{Binding ImageFiles}" Margin="0,8,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Transparent" 
+                                                Padding="8,6" 
+                                                Margin="4,2"
+                                                CornerRadius="6"
+                                                Cursor="Hand"
+                                                BorderThickness="1"
+                                                BorderBrush="Transparent">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Background" Value="{StaticResource PrimaryBgBrush}"/>
+                                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Border Width="24" Height="24" 
+                                                        Background="{StaticResource ImageEmeraldBgBrush}" 
+                                                        CornerRadius="4">
+                                                    <TextBlock Text="🖼️" 
+                                                               FontSize="12" 
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                                <TextBlock Text="{Binding FileName}"
+                                                           Foreground="{StaticResource ForegroundBrush}"
+                                                           FontSize="12" 
+                                                           Margin="8,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                            
+                                            <Border.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.SelectImageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                              CommandParameter="{Binding}"
+                                                              MouseAction="LeftClick"/>
+                                            </Border.InputBindings>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- ==================== 右列：预览与控制 ==================== -->
+            <Grid Grid.Column="2" Background="{StaticResource BackgroundBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- 预览区域 -->
+                <Grid Grid.Row="0" Margin="24">
+                    <!-- 无选中文件状态 -->
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Visibility="{Binding SelectedFile, Converter={StaticResource NullToVisibilityConverter_Invert}}">
+                        <Border Width="64" Height="64" 
+                                Background="{StaticResource SecondaryBrush}" 
+                                CornerRadius="32">
+                            <TextBlock Text="👁️" FontSize="28" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="Select a file to preview" 
+                                   Foreground="{StaticResource MutedForegroundBrush}" 
+                                   FontSize="13" Margin="0,16,0,0"/>
+                    </StackPanel>
+                    
+                    <!-- 选中视频时的预览 -->
+                    <Grid x:Name="VideoPreviewGrid"
+                          Visibility="{Binding SelectedVideo, Converter={StaticResource NullToVisibilityConverter}}"
+                          MouseLeftButtonDown="OnVideoPreviewClick">
+                        <Border Background="{StaticResource SecondaryBrush}" 
+                                CornerRadius="8"
+                                Padding="0">
+                            <Grid>
+                                <!-- MediaElement 视频播放器 -->
+                                <MediaElement x:Name="VideoPlayer"
+                                              Source="{Binding SelectedVideo.FullPath}"
+                                              LoadedBehavior="Manual"
+                                              UnloadedBehavior="Stop"
+                                              Stretch="Uniform"
+                                              MediaEnded="OnVideoMediaEnded"
+                                              MediaFailed="OnVideoMediaFailed"
+                                              MediaOpened="OnVideoMediaOpened"/>
+                                
+                                <!-- 播放/暂停按钮覆盖层 -->
+                                <Button HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Width="64" Height="64"
+                                        Background="{StaticResource PrimaryBrush}"
+                                        Command="{Binding PlayPauseCommand}"
+                                        Style="{StaticResource RoundedButtonStyle}"
+                                        Visibility="{Binding IsPlaying, Converter={StaticResource BoolToVisibilityConverter_Invert}}">
+                                    <Button.Effect>
+                                        <DropShadowEffect BlurRadius="8" Opacity="0.3"/>
+                                    </Button.Effect>
+                                    <TextBlock FontSize="24" 
+                                               Foreground="{StaticResource PrimaryForegroundBrush}"
+                                               Margin="4,0,0,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                                        <Setter Property="Text" Value="⏸"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsPlaying}" Value="False">
+                                                        <Setter Property="Text" Value="▶"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Button>
+                                
+                                <!-- 视频信息叠加层 -->
+                                <Border VerticalAlignment="Bottom" 
+                                        Background="#99000000"
+                                        CornerRadius="0,0,8,8"
+                                        Padding="16,12">
+                                    <StackPanel>
+                                        <!-- 文件名 -->
+                                        <TextBlock Text="{Binding SelectedVideo.FileName}"
+                                                   Foreground="White"
+                                                   FontSize="13"
+                                                   Margin="0,0,0,8"/>
+                                        
+                                        <!-- 进度条 -->
+                                        <Slider x:Name="VideoProgressSlider"
+                                                Minimum="0" Maximum="100"
+                                                Value="{Binding VideoProgress, Mode=TwoWay}"
+                                                Background="Transparent"
+                                                Foreground="{StaticResource VideoBlueBrush}"
+                                                Height="20"
+                                                Margin="0,0,0,8"
+                                                Thumb.DragStarted="OnVideoProgressDragStarted"
+                                                Thumb.DragCompleted="OnVideoProgressDragCompleted"
+                                                MouseLeftButtonDown="OnVideoProgressMouseDown"/>
+                                        
+                                        <!-- 时间显示 -->
+                                        <Grid>
+                                            <TextBlock Text="{Binding VideoCurrentTime, Converter={StaticResource SecondsToTimeStringConverter}}"
+                                                       Foreground="White"
+                                                       FontSize="12"
+                                                       HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding VideoDuration, Converter={StaticResource SecondsToTimeStringConverter}}"
+                                                       Foreground="#AAAAAA"
+                                                       FontSize="12"
+                                                       HorizontalAlignment="Right"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    
+                    <!-- 选中图片时的预览 -->
+                    <Grid Visibility="{Binding SelectedImage, Converter={StaticResource NullToVisibilityConverter}}"
+                          x:Name="ImagePreviewGrid"
+                          MouseWheel="OnImagePreviewMouseWheel">
+                        <Border Background="{StaticResource SecondaryBrush}" 
+                                CornerRadius="8">
+                            <Grid>
+                                <!-- 图片缩放容器 -->
+                                <Border Background="Transparent">
+                                    <ScrollViewer x:Name="ImageScrollViewer"
+                                                  HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  CanContentScroll="True">
+                                        <Image x:Name="PreviewImage"
+                                               Source="{Binding SelectedImage.FullPath}"
+                                               Stretch="Uniform"
+                                               RenderTransformOrigin="0.5,0.5">
+                                            <Image.RenderTransform>
+                                                <ScaleTransform ScaleX="{Binding ImageZoom}"
+                                                               ScaleY="{Binding ImageZoom}"/>
+                                            </Image.RenderTransform>
+                                        </Image>
+                                    </ScrollViewer>
+                                        </Border>
+                                
+                                <!-- 缩放控制栏（顶部） -->
+                                <Border VerticalAlignment="Top" 
+                                        Background="#99000000"
+                                        CornerRadius="8,8,0,0"
+                                        Padding="12">
+                                    <StackPanel Orientation="Horizontal" 
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                        <!-- 缩小按钮 -->
+                                        <Button Command="{Binding ZoomOutCommand}"
+                                                Width="32" Height="32"
+                                                Background="Transparent"
+                                                Foreground="White"
+                                                BorderBrush="White"
+                                                BorderThickness="1"
+                                                FontSize="16"
+                                                Content="-"
+                                                Margin="0,0,8,0"/>
+                                        
+                                        <!-- 缩放比例显示 -->
+                                        <TextBlock Text="{Binding ZoomPercentage, StringFormat={}{0:F0}%}"
+                                                   Foreground="White"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   Width="50"
+                                                   TextAlignment="Center"/>
+                                        
+                                        <!-- 放大按钮 -->
+                                        <Button Command="{Binding ZoomInCommand}"
+                                                Width="32" Height="32"
+                                                Background="Transparent"
+                                                Foreground="White"
+                                                BorderBrush="White"
+                                                BorderThickness="1"
+                                                FontSize="16"
+                                                Content="+"
+                                                Margin="8,0,16,0"/>
+                                        
+                                        <!-- 重置按钮 -->
+                                        <Button Command="{Binding ZoomResetCommand}"
+                                                Width="32" Height="32"
+                                                Background="Transparent"
+                                                Foreground="White"
+                                                BorderBrush="White"
+                                                BorderThickness="1"
+                                                FontSize="12"
+                                                Content="⟲"
+                                                Margin="0,0,0,0"/>
+                                        
+                                        <!-- 分隔线 -->
+                                        <Border Width="1" Height="24" 
+                                                Background="#666666"
+                                                Margin="16,0"/>
+                                        
+                                        <!-- 图片尺寸信息 -->
+                                        <TextBlock Text="{Binding SelectedImageDimensions, StringFormat={}🖼️ {0}}"
+                                                   Foreground="White"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   Margin="16,0,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+                
+                <!-- 分配组件区域（视频/图片分配下拉框） -->
+                <Border Grid.Row="1" 
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,1,0,0"
+                        Padding="24,16">
+                    <StackPanel>
+                        <!-- 视频剧集分配 -->
+                        <Border Visibility="{Binding SelectedVideo, Converter={StaticResource NullToVisibilityConverter}}"
+                                Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Assign to Episode" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                           FontSize="11" Margin="0,0,0,8"/>
+                                <ComboBox Background="{StaticResource InputBrush}"
+                                          Foreground="{StaticResource ForegroundBrush}"
+                                          BorderThickness="0"
+                                          Padding="8,6"
+                                          SelectedIndex="{Binding CurrentEpisodeIndex, Mode=TwoWay}"
+                                          ItemsSource="{Binding Episodes}"
+                                          DisplayMemberPath="DisplayTitle"/>
+                    </StackPanel>
+                </Border>
+                        
+                        <!-- 图片类型分配 -->
+                        <Border Visibility="{Binding SelectedImage, Converter={StaticResource NullToVisibilityConverter}}"
+                                Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="Image Type" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                           FontSize="11" Margin="0,0,0,8"/>
+                                <ComboBox Background="{StaticResource InputBrush}"
+                                          Foreground="{StaticResource ForegroundBrush}"
+                                          BorderThickness="0"
+                                          Padding="8,6"
+                                          SelectedIndex="{Binding SelectedImageRole, Mode=TwoWay, Converter={StaticResource ImageRoleToIndexConverter}}">
+                                    <ComboBoxItem Content="Poster"/>
+                                    <ComboBoxItem Content="Fanart"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+                
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>

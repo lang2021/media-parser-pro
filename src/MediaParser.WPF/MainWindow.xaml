@@ -1,0 +1,662 @@
+<Window x:Class="MediaParser.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MediaParser.WPF"
+        xmlns:vm="clr-namespace:MediaParser.WPF.ViewModels"
+        xmlns:conv="clr-namespace:MediaParser.WPF.Converters"
+        mc:Ignorable="d"
+        Title="MediaParser Pro" 
+        Height="700" Width="1100"
+        Background="#121212">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <!-- ==================== 亮色主题颜色 ==================== -->
+            <SolidColorBrush x:Key="BackgroundBrush" Color="#FAFAFA"/>
+            <SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="BorderBrush" Color="#E5E5E5"/>
+            <SolidColorBrush x:Key="ForegroundBrush" Color="#18181B"/>
+            <SolidColorBrush x:Key="MutedForegroundBrush" Color="#71717A"/>
+            <SolidColorBrush x:Key="InputBrush" Color="#F4F4F5"/>
+            <SolidColorBrush x:Key="PrimaryBrush" Color="#18181B"/>
+            <SolidColorBrush x:Key="PrimaryForegroundBrush" Color="#FAFAFA"/>
+            <SolidColorBrush x:Key="SecondaryBrush" Color="#F4F4F5"/>
+            
+            <!-- 文件类型颜色 -->
+            <SolidColorBrush x:Key="VideoBlueBrush" Color="#3B82F6"/>
+            <SolidColorBrush x:Key="VideoBlueBgBrush" Color="#DBEAFE"/>
+            <SolidColorBrush x:Key="ImageEmeraldBrush" Color="#10B981"/>
+            <SolidColorBrush x:Key="ImageEmeraldBgBrush" Color="#D1FAE5"/>
+            <SolidColorBrush x:Key="PrimaryBgBrush" Color="#F0F0F0"/>
+            
+            <!-- 状态颜色 -->
+            <SolidColorBrush x:Key="SuccessGreenBrush" Color="#22C55E"/>
+            <SolidColorBrush x:Key="WarningOrangeBrush" Color="#F97316"/>
+            
+            <!-- 渐变定义 -->
+            <LinearGradientBrush x:Key="ButtonGradient" StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#60A5FA" Offset="0"/>
+                <GradientStop Color="#3B82F6" Offset="1"/>
+            </LinearGradientBrush>
+
+            <!-- ==================== 按钮样式 ==================== -->
+            <Style x:Key="RoundedButtonStyle" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="32"
+                                    x:Name="border">
+                                <ContentPresenter HorizontalAlignment="Center" 
+                                                 VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" 
+                                            Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter Property="Opacity" Value="0.9"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" 
+                                            Value="{StaticResource PrimaryBrush}"/>
+                                    <Setter Property="Opacity" Value="0.8"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- ==================== Converters ==================== -->
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter_Invert" IsInvert="True"/>
+            <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <conv:NullToVisibilityConverter x:Key="NullToVisibilityConverter_Invert" IsInvert="True"/>
+            <conv:FileTypeToIconConverter x:Key="FileTypeToIconConverter"/>
+            <conv:FileTypeToColorConverter x:Key="FileTypeToColorConverter"/>
+            <conv:SecondsToTimeStringConverter x:Key="SecondsToTimeStringConverter"/>
+            
+            <!-- ViewModel -->
+            <vm:MainViewModel x:Key="MainViewModel"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True" Background="{StaticResource BackgroundBrush}">
+        
+        <!-- ==================== 顶部 ActionBar ==================== -->
+        <Border DockPanel.Dock="Top" 
+                Background="{StaticResource CardBackgroundBrush}" 
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Height="56">
+            <Grid Margin="16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Logo -->
+                <Grid Grid.Column="0" VerticalAlignment="Center">
+                    <Border Width="32" Height="32" Background="{StaticResource PrimaryBrush}" CornerRadius="6">
+                        <TextBlock Text="M" Foreground="{StaticResource PrimaryForegroundBrush}" 
+                                   FontSize="16" FontWeight="Bold" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </Grid>
+                
+                <!-- 标题 -->
+                <TextBlock Grid.Column="1" Text="MediaParser Pro" 
+                           Foreground="{StaticResource ForegroundBrush}" 
+                           FontSize="15" FontWeight="SemiBold" 
+                           VerticalAlignment="Center" Margin="12,0,0,0"/>
+                
+                <!-- 路径显示 -->
+                <TextBlock Grid.Column="2" 
+                           Text="{Binding CurrentFolderPath, Mode=OneWay}"
+                           Foreground="{StaticResource MutedForegroundBrush}" 
+                           FontSize="13" 
+                           VerticalAlignment="Center"
+                           Margin="16,0,0,0"
+                           TextTrimming="CharacterEllipsis"
+                           Visibility="{Binding CurrentFolderPath, Converter={StaticResource NullToVisibilityConverter}}"/>
+                
+                <!-- 按钮组 -->
+                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                    <!-- Select Folder 按钮 -->
+                    <Button Command="{Binding SelectDirectoryCommand}"
+                            Background="Transparent"
+                            Foreground="{StaticResource ForegroundBrush}"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            Padding="12,6"
+                            FontSize="13"
+                            Height="36"
+                            Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📁" FontSize="14" Margin="0,0,6,0"/>
+                            <TextBlock Text="Select Folder"/>
+                        </StackPanel>
+                    </Button>
+                    
+                    <!-- Parse & Generate 按钮 -->
+                    <Button Command="{Binding ParseGenerateCommand}"
+                            Background="{StaticResource PrimaryBrush}"
+                            Foreground="{StaticResource PrimaryForegroundBrush}"
+                            BorderThickness="0"
+                            Padding="12,6"
+                            FontSize="13"
+                            FontWeight="500"
+                            Height="36">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="✨" FontSize="14" Margin="0,0,6,0"/>
+                            <TextBlock Text="Parse &amp; Generate"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ==================== 主体内容区域 ==================== -->
+        <Grid Margin="0">
+            <Grid.ColumnDefinitions>
+                <!-- 左侧文件列表 -->
+                <ColumnDefinition Width="320"/>
+                <!-- 右侧预览区域 -->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ==================== 左列：File List ==================== -->
+            <Border Grid.Column="0" 
+                    Background="{StaticResource CardBackgroundBrush}"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0,0,1,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="12" Width="296">
+                        
+                        <!-- 视频文件分组 -->
+                        <StackPanel Margin="0,0,0,16">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,4">
+                                <TextBlock Text="🎬" FontSize="14"/>
+                                <TextBlock Text="Video Files" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                           FontSize="11" FontWeight="Medium"
+                                           Margin="8,0"
+                                           TextOptions.TextHintingMode="Animated"/>
+                                <TextBlock Text="(" Foreground="{StaticResource MutedForegroundBrush}" FontSize="11"/>
+                                <TextBlock Text="{Binding Videos.Count, Mode=OneWay}" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" FontSize="11"/>
+                                <TextBlock Text=")" Foreground="{StaticResource MutedForegroundBrush}" FontSize="11"/>
+                            </StackPanel>
+                            
+                            <ItemsControl ItemsSource="{Binding Videos}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Transparent" 
+                                                Padding="8,6" 
+                                                Margin="4,2"
+                                                CornerRadius="6"
+                                                Cursor="Hand">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected, Mode=OneWay}" Value="True">
+                                                            <Setter Property="Background" Value="{StaticResource PrimaryBgBrush}"/>
+                                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                                            <Setter Property="BorderThickness" Value="0.5"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <!-- Checkbox -->
+                                                <CheckBox Grid.Column="0" 
+                                                          IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                          VerticalAlignment="Center"
+                                                          Checked="OnFileCheckChanged"
+                                                          Unchecked="OnFileCheckChanged">
+                                                    <CheckBox.Style>
+                                                        <Style TargetType="CheckBox">
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsChecked" Value="True">
+                                                                    <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </CheckBox.Style>
+                                                </CheckBox>
+                                                
+                                                <!-- 文件图标 -->
+                                                <Border Grid.Column="1" 
+                                                        Width="32" Height="32" 
+                                                        Background="{StaticResource VideoBlueBgBrush}" 
+                                                        CornerRadius="4"
+                                                        Margin="8,0,0,0">
+                                                    <TextBlock Text="🎬" 
+                                                               FontSize="16" 
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                                
+                                                <!-- 文件名 -->
+                                                <TextBlock Grid.Column="2" 
+                                                           Text="{Binding FileName}"
+                                                           Foreground="{Binding IsSelected, Converter={StaticResource FileTypeToColorConverter}, Mode=OneWay}"
+                                                           FontSize="13" 
+                                                           Margin="8,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           ToolTip="{Binding FileName}"/>
+                                            </Grid>
+                                            
+                                            <Border.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.SelectVideoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                              CommandParameter="{Binding}"
+                                                              MouseAction="LeftClick"/>
+                                            </Border.InputBindings>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        
+                        <!-- 图片文件分组 -->
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,4">
+                                <TextBlock Text="🖼️" FontSize="14"/>
+                                <TextBlock Text="Image Files" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                           FontSize="11" FontWeight="Medium"
+                                           Margin="8,0"/>
+                                <TextBlock Text="(" Foreground="{StaticResource MutedForegroundBrush}" FontSize="11"/>
+                                <TextBlock Text="{Binding Images.Count, Mode=OneWay}" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" FontSize="11"/>
+                                <TextBlock Text=")" Foreground="{StaticResource MutedForegroundBrush}" FontSize="11"/>
+                            </StackPanel>
+                            
+                            <ItemsControl ItemsSource="{Binding Images}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Transparent" 
+                                                Padding="8,6" 
+                                                Margin="4,2"
+                                                CornerRadius="6"
+                                                Cursor="Hand">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected, Mode=OneWay}" Value="True">
+                                                            <Setter Property="Background" Value="{StaticResource PrimaryBgBrush}"/>
+                                                            <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                                            <Setter Property="BorderThickness" Value="0.5"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <!-- Checkbox -->
+                                                <CheckBox Grid.Column="0" 
+                                                          IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                          VerticalAlignment="Center"
+                                                          Checked="OnFileCheckChanged"
+                                                          Unchecked="OnFileCheckChanged"/>
+                                                
+                                                <!-- 文件图标 -->
+                                                <Border Grid.Column="1" 
+                                                        Width="32" Height="32" 
+                                                        Background="{StaticResource ImageEmeraldBgBrush}" 
+                                                        CornerRadius="4"
+                                                        Margin="8,0,0,0">
+                                                    <TextBlock Text="🖼️" 
+                                                               FontSize="16" 
+                                                               HorizontalAlignment="Center" 
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                                
+                                                <!-- 文件名 -->
+                                                <TextBlock Grid.Column="2" 
+                                                           Text="{Binding FileName}"
+                                                           Foreground="{StaticResource ForegroundBrush}"
+                                                           FontSize="13" 
+                                                           Margin="8,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           ToolTip="{Binding FileName}"/>
+                                            </Grid>
+                                            
+                                            <Border.InputBindings>
+                                                <MouseBinding Command="{Binding DataContext.SelectImageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                              CommandParameter="{Binding}"
+                                                              MouseAction="LeftClick"/>
+                                            </Border.InputBindings>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                        
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- ==================== 右列：Preview Panel ==================== -->
+            <Grid Grid.Column="1" Background="{StaticResource BackgroundBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- 预览内容区域 -->
+                <Grid Grid.Row="0" Margin="24">
+                    <!-- 无选中文件状态 -->
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Visibility="{Binding SelectedFile, Converter={StaticResource NullToVisibilityConverter_Invert}}">
+                        <Border Width="64" Height="64" 
+                                Background="{StaticResource SecondaryBrush}" 
+                                CornerRadius="32">
+                            <TextBlock Text="🖼️" FontSize="28" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="Select a file to preview" 
+                                   Foreground="{StaticResource MutedForegroundBrush}" 
+                                   FontSize="13" Margin="0,16,0,0"/>
+                    </StackPanel>
+                    
+                    <!-- 选中视频时的预览 -->
+                    <Grid x:Name="VideoPreviewGrid"
+                          Visibility="{Binding SelectedVideo, Converter={StaticResource NullToVisibilityConverter}}"
+                          MouseLeftButtonDown="OnVideoPreviewClick">
+                        <Border Background="{StaticResource SecondaryBrush}" 
+                                CornerRadius="8"
+                                Padding="0">
+                            <Grid>
+                                <!-- MediaElement 视频播放器 -->
+                                <MediaElement x:Name="VideoPlayer"
+                                              Source="{Binding SelectedVideo.FullPath}"
+                                              LoadedBehavior="Manual"
+                                              UnloadedBehavior="Stop"
+                                              Stretch="Uniform"
+                                              MediaEnded="OnVideoMediaEnded"
+                                              MediaFailed="OnVideoMediaFailed"
+                                              MediaOpened="OnVideoMediaOpened"/>
+                                
+                                <!-- 播放/暂停按钮覆盖层 -->
+                                <Button HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        Width="64" Height="64"
+                                        Background="{StaticResource PrimaryBrush}"
+                                        Command="{Binding PlayPauseCommand}"
+                                        Style="{StaticResource RoundedButtonStyle}"
+                                        Visibility="{Binding IsPlaying, Converter={StaticResource BoolToVisibilityConverter_Invert}}">
+                                    <Button.Effect>
+                                        <DropShadowEffect BlurRadius="8" Opacity="0.3"/>
+                                    </Button.Effect>
+                                    <TextBlock FontSize="24" 
+                                               Foreground="{StaticResource PrimaryForegroundBrush}"
+                                               Margin="4,0,0,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                                        <Setter Property="Text" Value="⏸"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsPlaying}" Value="False">
+                                                        <Setter Property="Text" Value="▶"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Button>
+                                
+                                <!-- 视频控制栏（始终可见，鼠标悬停更明显） -->
+                                <Border VerticalAlignment="Bottom" 
+                                        Background="#99000000"
+                                        CornerRadius="0,0,8,8"
+                                        Padding="16">
+                                    <StackPanel>
+                                        <!-- 进度条 -->
+                                        <Slider x:Name="VideoProgressSlider"
+                                                Minimum="0" Maximum="100"
+                                                Value="{Binding VideoProgress, Mode=TwoWay}"
+                                                Background="Transparent"
+                                                Foreground="{StaticResource VideoBlueBrush}"
+                                                Height="20"
+                                                Margin="0,0,0,8"
+                                                Thumb.DragStarted="OnVideoProgressDragStarted"
+                                                Thumb.DragCompleted="OnVideoProgressDragCompleted"
+                                                MouseLeftButtonDown="OnVideoProgressMouseDown"/>
+                                        
+                                        <!-- 时间显示 -->
+                                        <Grid>
+                                            <TextBlock Text="{Binding VideoCurrentTime, Converter={StaticResource SecondsToTimeStringConverter}}"
+                                                       Foreground="White"
+                                                       FontSize="12"
+                                                       HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding VideoDuration, Converter={StaticResource SecondsToTimeStringConverter}}"
+                                                       Foreground="#AAAAAA"
+                                                       FontSize="12"
+                                                       HorizontalAlignment="Right"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    
+                    <!-- 选中图片时的预览 -->
+                    <Grid Visibility="{Binding SelectedImage, Converter={StaticResource NullToVisibilityConverter}}"
+                          x:Name="ImagePreviewGrid"
+                          MouseWheel="OnImagePreviewMouseWheel">
+                        <Border Background="{StaticResource SecondaryBrush}" 
+                                CornerRadius="8">
+                            <Grid>
+                                <!-- 图片缩放容器 -->
+                                <Border Background="Transparent">
+                                    <ScrollViewer x:Name="ImageScrollViewer"
+                                                  HorizontalScrollBarVisibility="Auto"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  CanContentScroll="True">
+                                        <Image x:Name="PreviewImage"
+                                               Source="{Binding SelectedImage.FullPath}"
+                                               Stretch="Uniform"
+                                               RenderTransformOrigin="0.5,0.5">
+                                            <Image.RenderTransform>
+                                                <ScaleTransform ScaleX="{Binding ImageZoom}"
+                                                               ScaleY="{Binding ImageZoom}"/>
+                                            </Image.RenderTransform>
+                                        </Image>
+                                    </ScrollViewer>
+                                </Border>
+                                
+                                <!-- 缩放控制栏（顶部） -->
+                                <Border VerticalAlignment="Top" 
+                                        Background="#99000000"
+                                        CornerRadius="8,8,0,0"
+                                        Padding="12">
+                                    <StackPanel Orientation="Horizontal" 
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                        <!-- 缩小按钮 -->
+                                        <Button Command="{Binding ZoomOutCommand}"
+                                                Width="32" Height="32"
+                                                Background="Transparent"
+                                                Foreground="White"
+                                                BorderBrush="White"
+                                                BorderThickness="1"
+                                                FontSize="16"
+                                                Content="-"
+                                                Margin="0,0,8,0"/>
+                                        
+                                        <!-- 缩放比例显示 -->
+                                        <TextBlock Text="{Binding ZoomPercentage, StringFormat={}{0:F0}%}"
+                                                   Foreground="White"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   Width="50"
+                                                   TextAlignment="Center"/>
+                                        
+                                        <!-- 放大按钮 -->
+                                        <Button Command="{Binding ZoomInCommand}"
+                                                Width="32" Height="32"
+                                                Background="Transparent"
+                                                Foreground="White"
+                                                BorderBrush="White"
+                                                BorderThickness="1"
+                                                FontSize="16"
+                                                Content="+"
+                                                Margin="8,0,16,0"/>
+                                        
+                                        <!-- 重置按钮 -->
+                                        <Button Command="{Binding ZoomResetCommand}"
+                                                Width="32" Height="32"
+                                                Background="Transparent"
+                                                Foreground="White"
+                                                BorderBrush="White"
+                                                BorderThickness="1"
+                                                FontSize="12"
+                                                Content="⟲"
+                                                Margin="0,0,0,0"/>
+                                        
+                                        <!-- 分隔线 -->
+                                        <Border Width="1" Height="24" 
+                                                Background="#666666"
+                                                Margin="16,0"/>
+                                        
+                                        <!-- 图片尺寸信息 -->
+                                        <TextBlock Text="{Binding SelectedImageDimensions, StringFormat={}🖼️ {0}}"
+                                                   Foreground="White"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   Margin="16,0,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+                
+                <!-- 底部文件信息栏 -->
+                <Border Grid.Row="1" 
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,1,0,0"
+                        Padding="24,16">
+    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- 左侧：图标 + 文件名 -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- 视频图标 -->
+                            <Border Width="32" Height="32" 
+                                    Background="{StaticResource VideoBlueBgBrush}" 
+                                    CornerRadius="4"
+                                    Visibility="{Binding SelectedVideo, Converter={StaticResource NullToVisibilityConverter}}">
+                                <TextBlock Text="🎬" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            
+                            <!-- 图片图标 -->
+                            <Border Width="32" Height="32" 
+                                    Background="{StaticResource ImageEmeraldBgBrush}" 
+                                    CornerRadius="4"
+                                    Visibility="{Binding SelectedImage, Converter={StaticResource NullToVisibilityConverter}}">
+                                <TextBlock Text="🖼️" FontSize="16" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            
+                            <!-- 文件名信息 -->
+                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SelectedFile.FileName}"
+                                           Foreground="{StaticResource ForegroundBrush}"
+                                           FontSize="13" FontWeight="Medium"/>
+                                <TextBlock Foreground="{StaticResource MutedForegroundBrush}" FontSize="11">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedVideo}" Value="{x:Null}">
+                                                    <Setter Property="Text" Value="{Binding SelectedImage.FileType, StringFormat=Image File • {0}}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                            <Style.Setters>
+                                                <Setter Property="Text" Value="Video File • MP4"/>
+                                            </Style.Setters>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <!-- 中间：分辨率等信息 -->
+                        <StackPanel Grid.Column="1" 
+                                   Orientation="Horizontal" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Right"
+                                   Margin="0,0,24,0">
+                            <TextBlock Text="1920 × 1080" 
+                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                       FontSize="11"/>
+                            <TextBlock Text="•" 
+                                       Foreground="{StaticResource MutedForegroundBrush}" 
+                                       FontSize="11" Margin="8,0"/>
+                            
+                            <!-- 视频显示时长和大小 -->
+                            <StackPanel Orientation="Horizontal"
+                                       Visibility="{Binding SelectedVideo, Converter={StaticResource NullToVisibilityConverter}}">
+                                <TextBlock Text="2:34" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                           FontSize="11"/>
+                                <TextBlock Text="•" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                           FontSize="11" Margin="8,0"/>
+                                <TextBlock Text="24.5 MB" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                           FontSize="11"/>
+                            </StackPanel>
+                            
+                            <!-- 图片只显示大小 -->
+                            <StackPanel Orientation="Horizontal"
+                                       Visibility="{Binding SelectedImage, Converter={StaticResource NullToVisibilityConverter}}">
+                                <TextBlock Text="2.4 MB" 
+                                           Foreground="{StaticResource MutedForegroundBrush}" 
+                                           FontSize="11"/>
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <!-- 右侧：选中数量提示 -->
+                        <StackPanel Grid.Column="2" 
+                                   Orientation="Horizontal" 
+                                   VerticalAlignment="Center">
+                            <TextBlock Foreground="{StaticResource MutedForegroundBrush}" FontSize="11">
+                                <Run Text="Selected: "/>
+                                <Run Text="{Binding CheckedFilesCount, Mode=OneWay}"/>
+                                <Run Text=" files"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+    </Grid>
+    </DockPanel>
+</Window>

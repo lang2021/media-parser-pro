@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "DaPa1q0r3ks=",
+  "success": true,
+  "projectFilePath": "E:\\My_Digital_Vault\\01_Work_Projects (Code and Writing)\\01_Code\\01_Active\\MediaParser Pro\\MediaParserPro\\src\\MediaParser.Core\\MediaParser.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\HPEL\\.nuget\\packages\\microsoft.win32.systemevents\\10.0.2\\microsoft.win32.systemevents.10.0.2.nupkg.sha512",
+    "C:\\Users\\HPEL\\.nuget\\packages\\system.drawing.common\\10.0.2\\system.drawing.common.10.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}

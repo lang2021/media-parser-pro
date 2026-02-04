@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "UgcKqNKVYW0=",
+  "success": true,
+  "projectFilePath": "E:\\My_Digital_Vault\\01_Work_Projects (Code and Writing)\\01_Code\\01_Active\\MediaParser Pro\\MediaParserPro\\src\\MediaParser.WPF\\MediaParser.WPF.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\HPEL\\.nuget\\packages\\libvlcsharp\\3.8.0\\libvlcsharp.3.8.0.nupkg.sha512",
+    "C:\\Users\\HPEL\\.nuget\\packages\\libvlcsharp.wpf\\3.8.0\\libvlcsharp.wpf.3.8.0.nupkg.sha512",
+    "C:\\Users\\HPEL\\.nuget\\packages\\ookii.dialogs.wpf\\5.0.1\\ookii.dialogs.wpf.5.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
