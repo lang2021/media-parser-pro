@@ -71,6 +71,7 @@
             <conv:SecondsToTimeStringConverter x:Key="SecondsToTimeStringConverter"/>
             <conv:ListToStringConverter x:Key="ListToStringConverter"/>
             <conv:ImageRoleToIndexConverter x:Key="ImageRoleToIndexConverter"/>
+            <conv:EpisodeIndexToDisplayConverter x:Key="EpisodeIndexToDisplayConverter"/>
             
             <!-- ViewModel -->
             <vm:MainViewModel x:Key="MainViewModel"/>
@@ -1015,11 +1016,33 @@
                                           Foreground="{StaticResource ForegroundBrush}"
                                           BorderThickness="0"
                                           Padding="8,6"
-                                          SelectedIndex="{Binding CurrentEpisodeIndex, Mode=TwoWay}"
-                                          ItemsSource="{Binding Episodes}"
+                                          SelectedIndex="{Binding CurrentEpisodeIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          ItemsSource="{Binding DataContext.Episodes, RelativeSource={RelativeSource AncestorType=Window}}"
                                           DisplayMemberPath="DisplayTitle"/>
-                    </StackPanel>
-                </Border>
+                                
+                                <!-- ✨ 状态显示：用于调试验证每个视频的独立状态 -->
+                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                    <TextBlock Text="CurrentEpisodeIndex: "
+                                               Foreground="{StaticResource MutedForegroundBrush}"
+                                               FontSize="10"/>
+                                    <TextBlock Text="{Binding CurrentEpisodeIndex, Converter={StaticResource EpisodeIndexToDisplayConverter}}"
+                                               Foreground="{StaticResource VideoBlueBrush}"
+                                               FontSize="10"/>
+                                    <TextBlock Text=" | "
+                                               Foreground="{StaticResource MutedForegroundBrush}"
+                                               FontSize="10"/>
+                                    <TextBlock Text="Mapped: "
+                                               Foreground="{StaticResource MutedForegroundBrush}"
+                                               FontSize="10"/>
+                                    <TextBlock Foreground="{StaticResource WarningOrangeBrush}"
+                                               FontSize="10">
+                                        <TextBlock.Text>
+                                            <Binding Path="SelectedVideoMappedEpisodeNumber" Converter="{StaticResource EpisodeIndexToDisplayConverter}"/>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                         
                         <!-- 图片类型分配 -->
                         <Border Visibility="{Binding SelectedImage, Converter={StaticResource NullToVisibilityConverter}}"
@@ -1032,7 +1055,7 @@
                                           Foreground="{StaticResource ForegroundBrush}"
                                           BorderThickness="0"
                                           Padding="8,6"
-                                          SelectedIndex="{Binding SelectedImageRole, Mode=TwoWay, Converter={StaticResource ImageRoleToIndexConverter}}">
+                                          SelectedIndex="{Binding RoleIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <ComboBoxItem Content="Poster"/>
                                     <ComboBoxItem Content="Fanart"/>
                                 </ComboBox>

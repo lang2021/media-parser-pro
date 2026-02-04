@@ -287,3 +287,26 @@ public class ImageRoleToIndexConverter : IValueConverter
         return ImageRole.Unknown;
     }
 }
+
+/// <summary>
+/// EpisodeIndex 到显示字符串转换器（用于调试显示）
+/// 显示 EpisodeIndex 和 MappedEpisodeNumber 的值
+/// </summary>
+[ValueConversion(typeof(int), typeof(string))]
+public class EpisodeIndexToDisplayConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        // 只传入一个参数时，显示当前值
+        if (value is int episodeIndex)
+        {
+            return episodeIndex < 0 ? "未选择" : $"EpisodeIndex: {episodeIndex}";
+        }
+        return "未知";
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}

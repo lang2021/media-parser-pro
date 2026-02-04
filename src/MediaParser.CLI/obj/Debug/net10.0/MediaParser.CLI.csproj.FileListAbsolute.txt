@@ -35,3 +35,4 @@ E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaP
 E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.CLI\obj\Debug\net10.0\MediaParser.CLI.pdb
 E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.CLI\obj\Debug\net10.0\MediaParser.CLI.genruntimeconfig.cache
 E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.CLI\obj\Debug\net10.0\ref\MediaParser.CLI.dll
+E:\My_Digital_Vault\01_Work_Projects (Code and Writing)\01_Code\01_Active\MediaParser Pro\MediaParserPro\src\MediaParser.CLI\obj\Debug\net10.0\MediaParser.CLI.sourcelink.json

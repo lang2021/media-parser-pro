@@ -244,16 +244,15 @@ public VideoFile? SelectedVideo
                     OnPropertyChanged(nameof(SelectedImagePath));
                 }
                 
-                // 如果当前已选中剧集，自动映射视频到该剧集
-                if (CurrentEpisodeIndex >= 0)
-                {
-                    MapVideoToEpisode(_selectedVideo, CurrentEpisodeIndex + 1);
-                }
+                // 注意：移除了自动映射逻辑
+                // 每个视频独立管理自己的 EpisodeIndex
+                // 用户需要手动为每个视频分配剧集
             }
             
             OnPropertyChanged();
             OnPropertyChanged(nameof(SelectedVideoPath));
             OnPropertyChanged(nameof(SelectedFile));
+            OnPropertyChanged(nameof(SelectedVideoMappedEpisodeNumber));
         }
     }
 }
@@ -810,6 +809,14 @@ public int CurrentEpisodeIndex
     }
 }
 private int _currentEpisodeIndex;
+
+/// <summary>
+/// 当前选中视频已映射的剧集编号（用于 UI 状态显示）
+/// </summary>
+public int? SelectedVideoMappedEpisodeNumber
+{
+    get => SelectedVideo?.MappedEpisodeNumber;
+}
 
 /// <summary>
 /// 当前选中的剧集

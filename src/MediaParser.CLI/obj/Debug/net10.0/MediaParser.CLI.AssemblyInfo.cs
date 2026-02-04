@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MediaParser.CLI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7ec0544453b8a038a27eb22f5c0051db1b0b2372")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e58453fe69533523d07f552074c2c3471861fe0a")]
 [assembly: System.Reflection.AssemblyProductAttribute("MediaParser.CLI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MediaParser.CLI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
